@@ -8,8 +8,7 @@ public class Photo {
     @SerializedName("photos")
     public Photos photos;
 
-    public class PhotoAttributes
-    {
+    public class PhotoAttributes {
         @SerializedName("id")
         public String id;
         @SerializedName("owner")
@@ -25,8 +24,7 @@ public class Photo {
 
     }
 
-    public class Photos
-    {
+    public class Photos {
         @SerializedName("photo")
         public List<PhotoAttributes> photo = null;
     }

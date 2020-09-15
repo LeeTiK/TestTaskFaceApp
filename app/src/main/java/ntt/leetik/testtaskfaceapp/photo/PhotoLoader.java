@@ -20,8 +20,7 @@ import ntt.leetik.testtaskfaceapp.Adapter.PhotoViewAdapter;
 import ntt.leetik.testtaskfaceapp.net.RestService;
 import retrofit2.Retrofit;
 
-public class PhotoLoader
-{
+public class PhotoLoader {
     private Retrofit retrofit;
     private PhotoViewAdapter photoViewAdapter;
     private Context context;
@@ -29,23 +28,18 @@ public class PhotoLoader
 
     List<Photo.PhotoAttributes> marketList;
 
-    public PhotoLoader(Context context, Retrofit retrofit, PhotoViewAdapter photoViewAdapter)
-    {
+    public PhotoLoader(Context context, Retrofit retrofit, PhotoViewAdapter photoViewAdapter) {
         this.context = context;
         this.retrofit = retrofit;
         this.photoViewAdapter = photoViewAdapter;
         marketList = null;
     }
 
-    public void GetPagesCount (String urlString)
-    {
-        new Thread()
-        {
+    public void GetPagesCount(String urlString) {
+        new Thread() {
             @Override
-            public void run()
-            {
-                try
-                {
+            public void run() {
+                try {
                     HttpURLConnection urlConnection = null;
                     URL url = new URL(urlString);
                     urlConnection = (HttpURLConnection) url.openConnection();
@@ -64,10 +58,8 @@ public class PhotoLoader
 
                     Log.v("PhotoPresent", "str: " + sb.toString());
 
-                    pageCounterServer =  Integer.valueOf(new JSONObject(new JSONObject(sb.toString()).get("photos").toString()).get("pages").toString());
-                }
-                catch (Exception e)
-                {
+                    pageCounterServer = Integer.valueOf(new JSONObject(new JSONObject(sb.toString()).get("photos").toString()).get("pages").toString());
+                } catch (Exception e) {
                     System.out.println("JSON Exception: " + e);
                 }
             }
@@ -75,12 +67,11 @@ public class PhotoLoader
     }
 
     @SuppressLint("CheckResult")
-    public void GetPhotosData(String page)
-    {
+    public void GetPhotosData(String page) {
         RestService restService = retrofit.create(RestService.class);
 
         restService
-                .getRecentImageList(page,"20")
+                .getRecentImageList(page, "20")
                 .map(result -> Observable.fromIterable(result.photos.photo))
                 .flatMap(x -> x)
                 .toList()
@@ -90,24 +81,19 @@ public class PhotoLoader
                 .subscribe(this::AddResults, this::CatchError);
     }
 
-    private void AddResults(List<Photo.PhotoAttributes> marketList)
-    {
+    private void AddResults(List<Photo.PhotoAttributes> marketList) {
         Log.v("PhotoPresent", "marketList: " + marketList);
 
-        if (marketList != null && marketList.size() != 0)
-        {
+        if (marketList != null && marketList.size() != 0) {
             this.marketList = marketList;
             photoViewAdapter.SetData(marketList);
-        }
-        else
-        {
-            Toast.makeText(context,"нет результата",Toast.LENGTH_LONG).show();
+        } else {
+            Toast.makeText(context, "нет результата", Toast.LENGTH_LONG).show();
         }
     }
 
-    private void CatchError(Throwable t)
-    {
-        Toast.makeText(context, "ERROR" + " : " + t,Toast.LENGTH_LONG).show();
+    private void CatchError(Throwable t) {
+        Toast.makeText(context, "ERROR" + " : " + t, Toast.LENGTH_LONG).show();
     }
 
     public List<Photo.PhotoAttributes> getMarketList() {

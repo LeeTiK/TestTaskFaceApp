@@ -4,7 +4,6 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import com.github.chrisbanes.photoview.PhotoView;
@@ -21,20 +20,17 @@ import ntt.leetik.testtaskfaceapp.photo.Photo;
 import ntt.leetik.testtaskfaceapp.photo.SquareTransformation;
 
 
-public class PhotoViewAdapter extends RecyclerView.Adapter<PhotoViewAdapter.ViewHolder>
-{
+public class PhotoViewAdapter extends RecyclerView.Adapter<PhotoViewAdapter.ViewHolder> {
     private List<Photo.PhotoAttributes> photoList;
     private Context context;
 
-    public PhotoViewAdapter(Context context)
-    {
+    public PhotoViewAdapter(Context context) {
         photoList = new ArrayList<>();
         this.context = context;
     }
 
     @Override
-    public PhotoViewAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType)
-    {
+    public PhotoViewAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.activity_photoview, parent, false);
 
         PhotoViewAdapter.ViewHolder viewHolder = new PhotoViewAdapter.ViewHolder(view);
@@ -42,48 +38,44 @@ public class PhotoViewAdapter extends RecyclerView.Adapter<PhotoViewAdapter.View
     }
 
     @Override
-    public void onBindViewHolder(PhotoViewAdapter.ViewHolder holder, int position)
-    {
+    public void onBindViewHolder(PhotoViewAdapter.ViewHolder holder, int position) {
         final Photo.PhotoAttributes photoAttributes = photoList.get(position);
         Picasso.with(this.context)
                 .load(Utility.getUrlPhoto(photoAttributes))
                 .transform(new SquareTransformation())
                 .into(holder.display_to_image);
 
-        holder.relativeLayout.setOnClickListener(v ->
+        holder.display_to_image.setOnClickListener(v ->
         {
+            MainActivity.Current.mRelativeLayout.setVisibility(View.VISIBLE);
+            MainActivity.Current.mRecyclerView.setVisibility(View.INVISIBLE);
             Picasso.with(this.context)
                     .load(Utility.getUrlPhoto(photoAttributes))
-                    .into(MainActivity.Current.popupImageView);
+                    .into(MainActivity.Current.mImageView);
 
         });
     }
 
     @Override
-    public int getItemCount()
-    {
+    public int getItemCount() {
         return photoList.size();
     }
 
-    public void SetData(List<Photo.PhotoAttributes> data)
-    {
+    public void SetData(List<Photo.PhotoAttributes> data) {
         this.photoList.addAll(data);
         notifyDataSetChanged();
     }
 
-    public void ClearData()
-    {
+    public void ClearData() {
         this.photoList.clear();
         notifyDataSetChanged();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder
-    {
+    public class ViewHolder extends RecyclerView.ViewHolder {
         private PhotoView display_to_image;
         private RelativeLayout relativeLayout;
 
-        private ViewHolder(View view)
-        {
+        private ViewHolder(View view) {
             super(view);
 
             display_to_image = view.findViewById(R.id.photoView);

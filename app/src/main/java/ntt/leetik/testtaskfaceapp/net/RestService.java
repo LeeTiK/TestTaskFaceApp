@@ -1,14 +1,9 @@
 package ntt.leetik.testtaskfaceapp.net;
 
-import android.provider.ContactsContract;
-
-import java.util.Map;
 import io.reactivex.Observable;
 import ntt.leetik.testtaskfaceapp.photo.Photo;
 import retrofit2.http.GET;
-import retrofit2.http.Headers;
 import retrofit2.http.Path;
-import retrofit2.http.QueryMap;
 
 public interface RestService {
 

@@ -18,5 +18,7 @@ public class SquareTransformation implements Transformation {
     }
 
     @Override
-    public String key() { return "square()"; }
+    public String key() {
+        return "square()";
+    }
 }

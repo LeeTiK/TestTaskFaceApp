@@ -1,8 +1,18 @@
 package ntt.leetik.testtaskfaceapp;
 
+import android.content.res.Configuration;
+import android.os.Bundle;
+import android.view.View;
+import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
+import android.widget.Toast;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import ntt.leetik.testtaskfaceapp.Adapter.PhotoViewAdapter;
 import ntt.leetik.testtaskfaceapp.net.RestService;
@@ -13,25 +23,18 @@ import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-import android.os.Bundle;
-import android.widget.ImageView;
-import android.widget.RelativeLayout;
-import android.widget.Toast;
-
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-
 import static ntt.leetik.testtaskfaceapp.net.RestService.BASE_URL;
 import static ntt.leetik.testtaskfaceapp.net.RestService.MAIN_URL;
 
 public class MainActivity extends AppCompatActivity {
 
-    RecyclerView mRecyclerView;
+    public RecyclerView mRecyclerView;
     Retrofit retrofit;
     PhotoViewAdapter recyclerViewAdapter;
 
     public RelativeLayout mRelativeLayout;
-    public ImageView popupImageView;
+    public ImageView mImageView;
+    public ImageButton mButtonClose;
 
     int pageCounter = 1;
     public static MainActivity Current;
@@ -39,20 +42,25 @@ public class MainActivity extends AppCompatActivity {
     PhotoLoader mPhotoLoader;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState)
-    {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         Current = this;
-        popupImageView = findViewById(R.id.popup_imageview);
-        mRelativeLayout =  findViewById(R.id.relativeLayout);
+        mImageView = findViewById(R.id.popup_imageview);
+        mRelativeLayout = findViewById(R.id.popup_relativeLayout);
         mRecyclerView = findViewById(R.id.show_images_recyclerView);
+        mButtonClose = findViewById(R.id.close_imagebutton);
         recyclerViewAdapter = new PhotoViewAdapter(getApplicationContext());
         mRecyclerView.setAdapter(recyclerViewAdapter);
 
-        GridLayoutManager manager = new GridLayoutManager(this, 2);
-        mRecyclerView.setLayoutManager(manager);
+        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+            GridLayoutManager manager = new GridLayoutManager(this, 2);
+            mRecyclerView.setLayoutManager(manager);
+        } else if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            GridLayoutManager manager = new GridLayoutManager(this, 4);
+            mRecyclerView.setLayoutManager(manager);
+        }
 
         HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
         interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
@@ -65,7 +73,7 @@ public class MainActivity extends AppCompatActivity {
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .build();
         RestService restService = retrofit.create(RestService.class);
-        mPhotoLoader = new PhotoLoader(MainActivity.this,retrofit,recyclerViewAdapter);
+        mPhotoLoader = new PhotoLoader(MainActivity.this, retrofit, recyclerViewAdapter);
         mPhotoLoader.GetPagesCount(MAIN_URL);
         mPhotoLoader.GetPhotosData(String.valueOf(pageCounter));
 
@@ -101,28 +109,20 @@ public class MainActivity extends AppCompatActivity {
         });
         thread.start();;*/
 
-        mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener()
-        {
+        mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
-            public void onScrollStateChanged(RecyclerView recyclerView, int newState)
-            {
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
 
-                if (!recyclerView.canScrollVertically(1) && newState==RecyclerView.SCROLL_STATE_IDLE)
-                {
-                    if(pageCounter <= PhotoLoader.pageCounterServer)
-                    {
+                if (!recyclerView.canScrollVertically(1) && newState == RecyclerView.SCROLL_STATE_IDLE) {
+                    if (pageCounter <= PhotoLoader.pageCounterServer) {
                         pageCounter++;
 
                         mPhotoLoader.GetPhotosData(String.valueOf(pageCounter));
+                    } else {
+                        Toast.makeText(MainActivity.this, "нет фото", Toast.LENGTH_LONG).show();
                     }
-                    else
-                    {
-                        Toast.makeText(MainActivity.this,"нет фото",Toast.LENGTH_LONG).show();
-                    }
-                }
-                else if(!recyclerView.canScrollVertically(-1) && newState==RecyclerView.SCROLL_STATE_IDLE)
-                {
+                } else if (!recyclerView.canScrollVertically(-1) && newState == RecyclerView.SCROLL_STATE_IDLE) {
 
                     pageCounter = 1;
                     mPhotoLoader.GetPhotosData(String.valueOf(pageCounter));
@@ -130,5 +130,11 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        mButtonClose.setOnClickListener(v ->
+        {
+            //popup_relativeLayout.setAnimation(SetAnimation(MainActivity.Current,R.anim.origin_to_bottom));
+            mRelativeLayout.setVisibility(View.INVISIBLE);
+            mRecyclerView.setVisibility(View.VISIBLE);
+        });
     }
 }
