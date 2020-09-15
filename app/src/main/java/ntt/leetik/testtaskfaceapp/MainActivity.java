@@ -1,7 +1,9 @@
 package ntt.leetik.testtaskfaceapp;
 
 import android.content.res.Configuration;
+import android.graphics.Point;
 import android.os.Bundle;
+import android.view.Display;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -46,6 +48,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        initSizeDisplay();
+
         Current = this;
         mImageView = findViewById(R.id.popup_imageview);
         mRelativeLayout = findViewById(R.id.popup_relativeLayout);
@@ -53,6 +57,9 @@ public class MainActivity extends AppCompatActivity {
         mButtonClose = findViewById(R.id.close_imagebutton);
         recyclerViewAdapter = new PhotoViewAdapter(getApplicationContext());
         mRecyclerView.setAdapter(recyclerViewAdapter);
+
+        Utility.orientation = getResources().getConfiguration().orientation;
+
 
         if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
             GridLayoutManager manager = new GridLayoutManager(this, 2);
@@ -76,38 +83,6 @@ public class MainActivity extends AppCompatActivity {
         mPhotoLoader = new PhotoLoader(MainActivity.this, retrofit, recyclerViewAdapter);
         mPhotoLoader.GetPagesCount(MAIN_URL);
         mPhotoLoader.GetPhotosData(String.valueOf(pageCounter));
-
-    /*    Thread thread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-
-
-                Log.d("Main", "sleep");
-                try {
-                    Thread.sleep(10000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                Log.d("Main", "photoPresenter.getMarketList(): " + mPhotoLoader.getMarketList());
-                if (mPhotoLoader.getMarketList()!=null)
-                {
-                    Log.d("Main", "Url: " + Utility.getUrlPhoto(mPhotoLoader.getMarketList().get(0)));
-                    //ImageView imageView = findViewById(R.id.imageView);
-
-                    Handler uiHandler = new Handler(Looper.getMainLooper());
-                    uiHandler.post(new Runnable(){
-                        @Override
-                        public void run() {
-                            Picasso.with(Current)
-                                    .load(Utility.getUrlPhoto(mPhotoLoader.getMarketList().get(0)));
-                                   //.into(imageView);
-                        }
-                    });
-                }
-
-            }
-        });
-        thread.start();;*/
 
         mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -136,5 +111,14 @@ public class MainActivity extends AppCompatActivity {
             mRelativeLayout.setVisibility(View.INVISIBLE);
             mRecyclerView.setVisibility(View.VISIBLE);
         });
+
+    }
+
+    void initSizeDisplay(){
+        Display display = getWindowManager().getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+        Utility.width = size.x;
+        Utility.height = size.y;
     }
 }

@@ -4,13 +4,11 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <com.github.chrisbanes.photoview.PhotoView
+    <ImageView
         android:id="@+id/photoView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:adjustViewBounds="true"
-        android:layout_weight="0.35"
-        android:padding="20dp"
         android:scaleType="fitCenter" />
 
 
