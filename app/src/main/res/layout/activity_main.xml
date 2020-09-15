@@ -25,9 +25,10 @@
         <ImageView
             android:id="@+id/popup_imageview"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_below="@+id/close_imagebutton"
             android:layout_marginLeft="20dp"
+            android:layout_marginTop="18dp"
             android:layout_marginRight="20dp"
             android:layout_marginBottom="20dp"
             android:scaleType="fitCenter" />
@@ -37,6 +38,7 @@
         android:id="@+id/show_images_recyclerView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+
         android:translationZ="5dp" />
 
     <ProgressBar
