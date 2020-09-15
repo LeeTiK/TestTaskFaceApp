@@ -7,7 +7,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
-import com.bumptech.glide.Glide;
+import com.github.chrisbanes.photoview.PhotoView;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -18,6 +18,7 @@ import ntt.leetik.testtaskfaceapp.MainActivity;
 import ntt.leetik.testtaskfaceapp.R;
 import ntt.leetik.testtaskfaceapp.Utility;
 import ntt.leetik.testtaskfaceapp.photo.Photo;
+import ntt.leetik.testtaskfaceapp.photo.SquareTransformation;
 
 
 public class PhotoViewAdapter extends RecyclerView.Adapter<PhotoViewAdapter.ViewHolder>
@@ -46,13 +47,15 @@ public class PhotoViewAdapter extends RecyclerView.Adapter<PhotoViewAdapter.View
         final Photo.PhotoAttributes photoAttributes = photoList.get(position);
         Picasso.with(this.context)
                 .load(Utility.getUrlPhoto(photoAttributes))
+                .transform(new SquareTransformation())
                 .into(holder.display_to_image);
 
         holder.relativeLayout.setOnClickListener(v ->
         {
             Picasso.with(this.context)
                     .load(Utility.getUrlPhoto(photoAttributes))
-                    .into(MainActivity.Current.popup_imageview);
+                    .into(MainActivity.Current.popupImageView);
+
         });
     }
 
@@ -76,7 +79,7 @@ public class PhotoViewAdapter extends RecyclerView.Adapter<PhotoViewAdapter.View
 
     public class ViewHolder extends RecyclerView.ViewHolder
     {
-        private ImageView display_to_image;
+        private PhotoView display_to_image;
         private RelativeLayout relativeLayout;
 
         private ViewHolder(View view)

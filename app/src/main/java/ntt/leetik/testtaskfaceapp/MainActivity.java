@@ -31,7 +31,7 @@ public class MainActivity extends AppCompatActivity {
     PhotoViewAdapter recyclerViewAdapter;
 
     public RelativeLayout mRelativeLayout;
-    public ImageView popup_imageview;
+    public ImageView popupImageView;
 
     int pageCounter = 1;
     public static MainActivity Current;
@@ -45,16 +45,13 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         Current = this;
-
+        popupImageView = findViewById(R.id.popup_imageview);
         mRelativeLayout =  findViewById(R.id.relativeLayout);
         mRecyclerView = findViewById(R.id.show_images_recyclerView);
-
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerViewAdapter = new PhotoViewAdapter(getApplicationContext());
         mRecyclerView.setAdapter(recyclerViewAdapter);
 
         GridLayoutManager manager = new GridLayoutManager(this, 2);
-
         mRecyclerView.setLayoutManager(manager);
 
         HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
